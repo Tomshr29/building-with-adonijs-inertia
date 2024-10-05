@@ -1,20 +1,22 @@
-import { Link, router } from '@inertiajs/react'
-import { useState } from 'react'
+import { Link, useForm } from '@inertiajs/react'
+import type { FormEvent } from 'react'
 import AppHead from '~/components/AppHead'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 
 export default function Register() {
-  const [values] = useState({
+  const { data, setData, post, errors } = useForm({
     fullName: '',
     email: '',
     password: '',
   })
 
-  function handleSubmit() {
-    console.log(values)
+  function submit(e: FormEvent) {
+    e.preventDefault()
+    post('/register')
   }
+
   return (
     <>
       <AppHead
@@ -29,21 +31,42 @@ export default function Register() {
         </p>
       </div>
 
-      <form className="grid gap-3" onSubmit={handleSubmit}>
-        <Label className="grid gap-1">
-          <span>Full Name</span>
-          <Input type="text" name="form.fullName" />
-        </Label>
+      <form className="grid gap-3" onSubmit={submit}>
+        <div className="grid gap-1">
+          <Label className="grid gap-1">
+            <span>Full Name</span>
+            <Input
+              type="text"
+              value={data.fullName}
+              onChange={(e) => setData('fullName', e.target.value)}
+            />
+          </Label>
+          {errors.fullName && <div className="text-red-500 text-sm">{errors.fullName}</div>}
+        </div>
 
-        <Label className="grid gap-1">
-          <span>Email</span>
-          <Input type="email" name="form.email" />
-        </Label>
+        <div className="grid gap-1">
+          <Label className="grid gap-1">
+            <span>Email</span>
+            <Input
+              type="email"
+              value={data.email}
+              onChange={(e) => setData('email', e.target.value)}
+            />
+          </Label>
+          {errors.email && <div className="text-red-500 text-sm">{errors.email}</div>}
+        </div>
 
-        <Label className="grid gap-1">
-          <span>Password</span>
-          <Input type="password" name="form.password" />
-        </Label>
+        <div className="grid gap-1">
+          <Label className="grid gap-1">
+            <span>Password</span>
+            <Input
+              type="password"
+              value={data.password}
+              onChange={(e) => setData('password', e.target.value)}
+            />
+          </Label>
+          {errors.password && <div className="text-red-500 text-sm">{errors.password}</div>}
+        </div>
 
         <Button type="submit">Register</Button>
       </form>
